@@ -80,14 +80,6 @@ function myScript(thisObj){
   })();
   var fullFilePath = "C:\\ProgramData\\VariFont\\fontsFound.txt";
 
-  function deleteDuplicates(arr) {
-    var a = [];
-    for (var i=0, l = arr.length; i < l; i++)
-        if (a.indexOf(arr[i]) === -1 && arr[i] !== '')
-            a.push(arr[i]);
-    return a;
-  }
-
   function showMeObjectProperties(myObject) {
     for (var x in myObject) {
       alert(x );
@@ -110,15 +102,19 @@ function myScript(thisObj){
         curLine = curLine.slice(curLineNewStart, curLineEnd);
         var fontInfo = curLine.split(",");
         var fontName = fontInfo[0].replace("family: ", "").replace("'", "").replace("'", "");
-        allEntries.push(fontName);
+        if (i === 0) {
+          allEntries.push(fontName);
+          menu.add("item", fontName);
+        } else {
+          if (allEntries.indexOf(fontName) === -1) {
+            allEntries.push(fontName);
+            menu.add("item", fontName);
+          }
+        }
       }
     }
-    var reducedList  = deleteDuplicates(allEntries);
-    for (var j=0; j < reducedList.length; j++) {
-      var curFamily = reducedList[j];
-      menu.add("item",curFamily);
-      }
     myFile.close();
+    menu.items[0].selected = true;
   }
   function populateStyleMenu(filePath, targetFamily, menu){
     menu.removeAll();
@@ -138,6 +134,7 @@ function myScript(thisObj){
         menu.add("item",styleName);
       }
     }
+    menu.items[0].selected = true;
     myFile.close();
   }
   populateFamilyMenu (fullFilePath, fontFamilyMenu);
